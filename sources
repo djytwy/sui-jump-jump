@@ -1,9 +1,0 @@
-<script>start("/Users/djytwy/Desktop/workplace/SuiJumpJump/contract/sources/");</script>
-<script>onHasParentDirectory();</script>
-<script>addRow(".DS_Store",".DS_Store",0,6148,"6.0 kB",1740411447,"2025/2/24 23:37:27");</script>
-<script>addRow("distribute.move","distribute.move",0,4071,"4.0 kB",1740411447,"2025/2/24 23:37:27");</script>
-<script>addRow("prizePool.move","prizePool.move",0,4045,"4.0 kB",1740411447,"2025/2/24 23:37:27");</script>
-<script>addRow("rank.move","rank.move",0,2189,"2.1 kB",1741675362,"2025/3/11 14:42:42");</script>
-<script>addRow("sbt.move","sbt.move",0,1453,"1.4 kB",1740411447,"2025/2/24 23:37:27");</script>
-<script>addRow("ticket.move","ticket.move",0,4306,"4.2 kB",1741675690,"2025/3/11 14:48:10");</script>
-<script>addRow("versionControl.move","versionControl.move",0,1414,"1.4 kB",1740411447,"2025/2/24 23:37:27");</script>
