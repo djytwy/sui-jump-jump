@@ -3,7 +3,7 @@ module suiJumpJump::Ticket;
 use sui::sui::SUI;
 use sui::event;
 use sui::coin::Coin;
-use sui::url::{ Url, new_unsafe_from_bytes};
+use sui::url::{ new_unsafe_from_bytes };
 use std::string::{ String, utf8};
 use sui::clock::{ Clock, timestamp_ms};
 use suiJumpJump::prizePool::{ PrizePool, updateBalance, getPoolLevel };
@@ -25,7 +25,6 @@ public struct TicketPrice has key, store {
 public struct Ticket has key, store {
     id: UID,
     price: u64,
-    image: Url,
     buyTime: u64,
     level: String
 }
@@ -51,9 +50,9 @@ fun init(ctx: &mut TxContext) {
     let ticketPrice = TicketPrice {
         id: object::new(ctx),
         // init price
-        goldPrice: 100_000_000,
-        sliverPrice: 50_000_000,
-        bronzePrice: 10_000_000
+        goldPrice: 1000_000_000,
+        sliverPrice: 400_000_000,
+        bronzePrice: 100_000_000
     };
     transfer::public_share_object(ticketPrice);
     let ticketAdmin = TicketAdminCap {
@@ -75,36 +74,27 @@ entry fun buyTicket (money: Coin<SUI>, ticketPrice: &TicketPrice, pool: &mut Pri
     let poolLevel = getPoolLevel(pool);
     if (poolLevel == utf8(b"gold")) {
         assert!(money.value() == ticketPrice.goldPrice, EAmountMustBeGreaterThanGoldTicketPrice);
-        let url_bytes = b"https://s2.coinmarketcap.com/static/img/coins/64x64/74.png";
-        let gold_url = new_unsafe_from_bytes(url_bytes);
         let ticket = Ticket {
             id: object::new(ctx),
             price: money.value(),
-            image: gold_url,
             buyTime: timestamp_ms(clock),
             level: b"gold".to_string()
         };
         transfer::public_transfer(ticket, ctx.sender())
     } else if (poolLevel == utf8(b"sliver")) {
         assert!(money.value() == ticketPrice.sliverPrice, EAmountMustBeGreaterThanSliverTicketPrice);
-        let url_bytes = b"https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png";
-        let sliver_url = new_unsafe_from_bytes(url_bytes);
         let ticket = Ticket {
             id: object::new(ctx),
             price: money.value(),
-            image: sliver_url,
             buyTime: timestamp_ms(clock),
             level: b"sliver".to_string()
         };
         transfer::public_transfer(ticket, ctx.sender())
     } else if (poolLevel == utf8(b"bronze")) {
         assert!(money.value() == ticketPrice.bronzePrice, EAmountMustBeGreaterThanbronzeTicketPrice);
-        let url_bytes = b"https://s2.coinmarketcap.com/static/img/coins/64x64/33258.png";
-        let bronze_url = new_unsafe_from_bytes(url_bytes);
         let ticket = Ticket {
             id: object::new(ctx),
             price: money.value(),
-            image: bronze_url,
             buyTime: timestamp_ms(clock),
             level: b"bronze".to_string()
         };
@@ -133,7 +123,7 @@ public fun getTicketTime (ticket: &Ticket): u64 {
 
 #[allow(unused_variable)]
 public fun delTicket (ticket: Ticket) {
-    let Ticket { id, buyTime, price, level, image } = ticket;
+    let Ticket { id, buyTime, price, level } = ticket;
     object::delete(id);
 }
 
