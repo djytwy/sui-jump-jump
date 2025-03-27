@@ -10,7 +10,6 @@ use sui::sui::SUI;
 use std::string::{ String,};
 use sui::coin::Coin;
 use sui::coin;
-// use sui::event;
 
 // error:
 const EAmountMustBeGreaterThanZero: u64 = 1;

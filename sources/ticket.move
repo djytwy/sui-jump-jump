@@ -3,7 +3,6 @@ module suiJumpJump::Ticket;
 use sui::sui::SUI;
 use sui::event;
 use sui::coin::Coin;
-use sui::url::{ new_unsafe_from_bytes };
 use std::string::{ String, utf8};
 use sui::clock::{ Clock, timestamp_ms};
 use suiJumpJump::prizePool::{ PrizePool, updateBalance, getPoolLevel };

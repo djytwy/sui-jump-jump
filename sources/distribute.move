@@ -106,5 +106,3 @@ entry fun distributeLessThan10 (
         distributeEvery( bronzePlayerList, bronzePool, ctx)
     }  
 }
-
-// Cetus: 0x3a5aa90ffa33d09100d7b6941ea1c0ffe6ab66e77062ddd26320c1b073aabb10, module: pool_creator_v2, function: create_pool_v2, 
