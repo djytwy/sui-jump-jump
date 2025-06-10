@@ -1,0 +1,163 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+
+        u_arc_color: {
+          value: [0.9, 0.9, 0.9, 1.0],
+          editor: {
+            type: color,
+            tooltip: "圆弧线颜色"
+          }
+        }
+        u_arc_radius: { 
+          value: 0.2, 
+          editor: { 
+            tooltip: "圆弧半径"
+          } 
+        } 
+        u_arc_line_width: {
+          value: 0.05,
+          editor: {
+            tooltip: "圆弧线宽"
+          }
+        }
+        u_gap_angle: {
+          value: 30.0,
+          editor: {
+            tooltip: "缺口所在角度"
+          }
+        }
+        u_gap_angle_range: {
+          value: 90.0,
+          editor: {
+            tooltip: "缺口所在角度的夹角范围"
+          }
+        }
+        u_rotation_speed: {
+          value: 1.0,
+          editor: {
+            tooltip: "画布转动速度"
+          }
+        }
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <rotation-center>
+
+  in vec4 color;
+
+  #if USE_TEXTURE
+    in vec2 uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 12) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  #if USE_TEXTURE
+    uniform style{
+      vec4 u_arc_color;
+      float u_arc_line_width;
+      float u_arc_radius;
+      float u_gap_angle;
+      float u_gap_angle_range;
+      float u_rotation_speed;
+    };
+
+    vec4 get_color() {
+      vec2 i_uv0 = getRotationCenter(uv0, u_rotation_speed * 100.0);
+      float len = length(i_uv0);
+      float t = sin(cc_time.x*PI + 0.1);
+      float a_line_width = u_arc_line_width;
+      #if USE_WIDTH_ANIM
+        a_line_width *= 0.8 + -.3*t;
+      #endif
+      float a_radius = u_arc_radius;
+      #if USE_ARC_ANIM
+        a_radius *= 0.95 + -.15*t;
+      #endif
+      float min_radius = a_radius - a_line_width*0.5;
+      float max_radius = a_radius + a_line_width*0.5;
+      if (len >= min_radius && len <= max_radius) {
+        float radian = acos(i_uv0.x / len);
+        float radian_range = radians(u_gap_angle_range * 0.5);
+        if (radian >= radian_range) {
+          float alpha = 1.0;
+          #if USE_ANTI_ALIAS
+            alpha = smoothstep(0.1, 0.35, 1.0 - abs(len - a_radius) / (a_line_width * 0.5));
+          #endif
+          return u_arc_color * alpha;
+        } 
+      }
+      return vec4(0);
+    }
+  #endif
+
+  vec4 frag () {
+    vec4 o = vec4(1);
+    #if USE_TEXTURE
+      o = get_color();
+    #endif
+    o *= color;
+    ALPHA_TEST(o);
+    return o;
+  }
+}%
