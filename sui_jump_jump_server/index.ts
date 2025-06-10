@@ -7,7 +7,7 @@ import { rankRecords, rankTableAuth, manageKeyPair, privateKey, packageID, publi
 const JSEncrypt = require("jsencrypt-node");
 
 const redisClient = createClient({
-    url: 'redis://default:AY3kAAIjcDEzOGZlNDVjMWYxMWM0MzA3ODBjMjZkYjUwNDE2MzNhMHAxMA@enough-midge-36324.upstash.io:6379', // 根据你的 Redis 服务器地址进行修改
+    url: 'redis://default:xxxx', // 根据你的 Redis 服务器地址进行修改
     socket: {
         tls: true
     }
