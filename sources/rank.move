@@ -30,7 +30,7 @@ fun init(ctx: &mut TxContext) {
         id: object::new(ctx)
     };
     transfer::public_transfer(cap, ctx.sender());
-    dof::add(&mut records.id, b"2025-05-23".to_string(), initTabel);
+    dof::add(&mut records.id, b"2025-09-03".to_string(), initTabel);
     transfer::public_share_object(records);
 }
 

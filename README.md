@@ -1,6 +1,6 @@
 #### sui jump jump 
 
-A mini game power by Sui.
+A mini game powered by Sui.
 Unique game mode.
 
 Jump for fun, jump for earn !
