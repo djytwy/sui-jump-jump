@@ -3,8 +3,7 @@ use sui::package;
 use sui::display;
 use std::string::String;
 use sui::coin::{Coin};
-use sui::sui::SUI;
-
+use bucket_v2_usd::usdb::USDB;
 
 // error:
 const ESuiAmountMustBeEqualWithPrice: u64 = 11;
@@ -54,7 +53,7 @@ fun init(otw: SKIN_STORE, ctx: &mut TxContext) {
         // For `name` one can use the `Skin.name` property
         b"{name}".to_string(),
         // For `link` one can build a URL using an `id` property
-        b"https://testnet.suivision.xyz/object/{id}".to_string(),
+        b"https://suivision.xyz/object/{id}".to_string(),
         // For `image_url`
         b"{image_url}".to_string(),
         // Description is static for all `Skin` objects.
@@ -80,12 +79,12 @@ fun init(otw: SKIN_STORE, ctx: &mut TxContext) {
     let skin_info = SKIN_INFO {
         id: object::new(ctx),
         skin_list: vector[
-            b"https://aggregator.walrus-mainnet.walrus.space/v1/blobs/QkMMz8Nvl8Nj48U0LKHdqlRC6SxflNDP_VBEHnz3yTM".to_string(), 
-            b"https://aggregator.walrus-mainnet.walrus.space/v1/blobs/jg4plW6I0Dvhnd00IFgQYiEEItFH0P4OlWO8yfMjiLE".to_string(),
-            b"https://aggregator.walrus-mainnet.walrus.space/v1/blobs/9SryNhWHNxm2oCJccNXpQEMvh67A1D198jKOVmOpNy0".to_string()
+            b"https://aggregator.walrus-mainnet.walrus.space/v1/blobs/eJmLZ0QYcuI5KsbRjMnnTJwGJ-hcVbizVACM4HIpN3M".to_string(), 
+            b"https://aggregator.walrus-mainnet.walrus.space/v1/blobs/52tUM7ups1iN22nHp6IkeQwtAog_neNRajwM2aNXob4".to_string(),
+            b"https://aggregator.walrus-mainnet.walrus.space/v1/blobs/OarbxLwnyFxFptBeuBR9vVZP1N8dqWFvg8UnAyQrCjs".to_string()
         ],
         name_list: vector[b"recycleBottleJumper".to_string(),b"catJumper".to_string(),b"springJumper".to_string()],
-        price_list: vector[0,1_000_000_000,2_000_000_000],
+        price_list: vector[0,1_000_000,2_000_000],
         gm: ctx.sender()
     };
 
@@ -100,7 +99,7 @@ fun init(otw: SKIN_STORE, ctx: &mut TxContext) {
 }
 
 /// Anyone can mint
-public entry fun mint(name: String, image_url: String, pay: Coin<SUI>, _skins: &SKIN_INFO,ctx: &mut TxContext) {
+public fun mint(name: String, image_url: String, pay: Coin<USDB>, _skins: &SKIN_INFO,ctx: &mut TxContext) {
     let mut index = 0;
     let mut _image_url = b"".to_string();
     let mut _name = b"".to_string();
