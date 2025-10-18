@@ -1,5 +1,7 @@
 ### sui jump jump smart contract
 
+package: https://suivision.xyz/package/0xee9aec5a38da5613a0412791974eff83148f7f966cb5112c338d721ff64ce0ba
+
 #### 1. distribute.move:
    主要负责奖池的分发, 分发每次购票游戏后的 bouns, 分发给排名多少的玩家。
 #### 2.prizePool.move:
